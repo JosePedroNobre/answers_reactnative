@@ -52,9 +52,9 @@ const App = () => {
       ) : (
         <FlatList
           data={data}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          onEndReached={handleLoadMore}
+          renderItem={renderItem} 
+          keyExtractor={keyExtractor} // used to extract unique keys from items in the FlatList
+          onEndReached={handleLoadMore} // form of lazing loading for fetching additional data as the user scrolls through the list.
           onEndReachedThreshold={0.1}
           ListFooterComponent={() => (loading ? <ActivityIndicator size="large" /> : null)}
         />
