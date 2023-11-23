@@ -9,18 +9,18 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}?page=${page}`);
       const newData = response.data;
 
-      setData((prevData) => [...prevData, ...newData]);
-
-      // Check if there is more data to fetch
+      setData(prevData => [...prevData, ...newData]);
       setHasMore(newData.length > 0);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setErrorMessage('Failed to fetch data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -43,18 +43,22 @@ const App = () => {
     </View>
   );
 
-  const keyExtractor = (item) => String(item.id);
+  const keyExtractor = item => String(item.id);
 
   return (
     <View>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.1}
-        ListFooterComponent={() => (loading ? <ActivityIndicator size="large" /> : null)}
-      />
+      {errorMessage ? (
+        <Text style={{ color: 'red', margin: 10 }}>{errorMessage}</Text>
+      ) : (
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.1}
+          ListFooterComponent={() => (loading ? <ActivityIndicator size="large" /> : null)}
+        />
+      )}
     </View>
   );
 };
